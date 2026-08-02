@@ -793,6 +793,14 @@ main {
 }
 @media (min-width: 640px) { .footer-bottom { flex-direction: row; justify-content: space-between; align-items: center; } }
 .footer-bottom nav { display: flex; flex-wrap: wrap; gap: 1.25rem; }
+.footer-credit {
+  margin-top: 2rem;
+  text-align: center;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.45);
+}
+.footer-credit a { transition: color 0.3s ease; }
+@media (hover: hover) { .footer-credit a:hover { color: #ffffff; text-decoration: underline; } }
 
 /* ==========================================================================
    Contact modal
@@ -1386,6 +1394,10 @@ main {
         <a href="#terms">Terms</a>
       </nav>
     </div>
+
+    <p class="footer-credit">
+      <a href="https://www.upwork.com/freelancers/~01238100bda052dcdb?mp_source=share" target="_blank" rel="noopener noreferrer">This site made by Alex M.</a>
+    </p>
   </footer>
 
 </main>
