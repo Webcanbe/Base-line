@@ -1,0 +1,2149 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Baseline — Tennis Club &amp; Academy</title>
+<meta name="description" content="Baseline is a members' tennis club and academy where focused coaching meets championship courts." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500&display=swap" rel="stylesheet" />
+<script type="importmap">
+{ "imports": { "lenis": "https://cdn.jsdelivr.net/npm/lenis@1.1.18/+esm" } }
+</script>
+<script>
+/* Adaptive rem grid — run before first paint so >1920px viewports never flash. */
+(function () {
+  var FONT_BASE = 16, BASE_W = 1920, COEF = 0.6666, html = document.documentElement;
+  function apply() {
+    var reduction = ((BASE_W - window.innerWidth) / BASE_W) * 100 * COEF;
+    var size = FONT_BASE - (FONT_BASE * reduction) / 100;
+    if (size > FONT_BASE) html.style.fontSize = size + "px";
+    else html.style.removeProperty("font-size");
+  }
+  apply();
+  window.__baselineFontScale = apply;
+  window.addEventListener("resize", apply);
+  if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+})();
+</script>
+<style>
+/* ==========================================================================
+   Tokens
+   ========================================================================== */
+:root {
+  --background: #ffffff;
+  --foreground: #0a0a0a;
+  --brand: #2563c9;
+  --brand-deep: #0f2f63;
+  --brand-light: #5790e6;
+  --accent-teal: #0b6e97;
+  --surface: #f4f4f4;
+  --surface-card: #ffffff;
+  --ink: #0a0a0a;
+  --ink-soft: #717784;
+  --ghost: #d7dae1;
+  --hairline: #e6e8ec;
+  --on-brand: #ffffff;
+
+  --radius-card: 1.5rem;
+  --radius-card-lg: 2rem;
+  --radius-pill: 62.5rem;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-in-out-cubic: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+/* ==========================================================================
+   Reset
+   ========================================================================== */
+*, *::before, *::after { box-sizing: border-box; }
+* { margin: 0; }
+
+html { font-size: 16px; }
+@media (max-width: 1920px) { html { font-size: 0.833333vw; } }
+@media (max-width: 1440px) { html { font-size: 1.111111vw; } }
+@media (max-width: 1024px) { html { font-size: 1.5625vw; } }
+@media (max-width: 640px)  { html { font-size: 4.444444vw; } }
+
+html.is-locked { position: relative; overflow: hidden; height: 100%; }
+
+body {
+  min-height: 100vh;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: "Onest", system-ui, sans-serif;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+img, svg, video, canvas { display: block; max-width: 100%; }
+button { cursor: pointer; font: inherit; color: inherit; background: none; border: 0; padding: 0; }
+a { color: inherit; text-decoration: none; }
+ul, ol { list-style: none; padding: 0; }
+input, textarea, select { font: inherit; color: inherit; }
+h1, h2, h3, h4, p, blockquote, figure, dl, dd { margin: 0; }
+:focus-visible { outline: 2px solid var(--brand-light); outline-offset: 2px; }
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+
+/* ==========================================================================
+   Reveal primitives
+   ========================================================================== */
+.word {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  padding-bottom: 0.12em;
+}
+.word > span {
+  display: inline-block;
+  transform: translateY(115%);
+  opacity: 0;
+  will-change: transform, opacity;
+}
+.line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.14em;
+}
+.line > span {
+  display: block;
+  transform: translateY(115%);
+  opacity: 0;
+  will-change: transform, opacity;
+}
+/* Elements whose entrance is JS-spring driven start hidden so there is no flash. */
+.reveal { opacity: 0; }
+/* Paragraph split into words by JS. */
+.words-src { opacity: 0; }
+
+/* ==========================================================================
+   Page shell
+   ========================================================================== */
+main {
+  width: 100%;
+  overflow-x: clip;
+  padding: 0.5rem;
+}
+@media (min-width: 640px) { main { padding: 0.75rem; } }
+
+/* ==========================================================================
+   Shared UI: eyebrow / pill button / arrow button / dots / brand mark
+   ========================================================================== */
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+}
+.eyebrow i {
+  display: block;
+  width: 0.375rem;
+  height: 0.375rem;
+  border-radius: var(--radius-pill);
+  flex: none;
+}
+.eyebrow--dark { color: var(--ink-soft); }
+.eyebrow--dark i { background: var(--brand); }
+.eyebrow--light { color: rgba(255, 255, 255, 0.7); }
+.eyebrow--light i { background: var(--brand-light); }
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: var(--radius-pill);
+  padding: 0.875rem 1.75rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+  white-space: nowrap;
+  transition: background-color 0.35s ease, color 0.35s ease, border-color 0.35s ease;
+}
+.pill svg { width: 1rem; height: 1rem; flex: none; }
+.pill--light { background: #ffffff; color: var(--brand-deep); }
+.pill--solid { background: var(--ink); color: #ffffff; }
+.pill--outline { border: 1px solid currentColor; color: var(--ink); }
+@media (hover: hover) {
+  .pill--light:hover { background: var(--brand-light); color: #ffffff; }
+  .pill--solid:hover { background: var(--brand-deep); }
+  .pill--outline:hover { background: var(--ink); color: #ffffff; }
+}
+.pill:disabled { opacity: 0.6; cursor: default; }
+
+.arrow-btn {
+  width: 3rem;
+  height: 3rem;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-pill);
+  border: 1px solid transparent;
+  flex: none;
+  transition: background-color 0.35s ease, border-color 0.35s ease, color 0.35s ease;
+}
+@media (min-width: 640px) { .arrow-btn { width: 3.5rem; height: 3.5rem; } }
+.arrow-btn svg { width: 1.25rem; height: 1.25rem; }
+.arrow-btn--outline { border-color: var(--hairline); background: transparent; color: var(--ink); }
+.arrow-btn--solid { background: var(--ink); border-color: var(--ink); color: #ffffff; }
+@media (hover: hover) {
+  .arrow-btn--outline:hover { border-color: var(--ink); }
+  .arrow-btn--solid:hover { background: var(--brand-deep); border-color: var(--brand-deep); }
+}
+
+.dots { display: flex; align-items: center; gap: 0.5rem; }
+.dots button { padding: 0.375rem; display: block; }
+.dots button i {
+  display: block;
+  height: 0.375rem;
+  width: 0.375rem;
+  border-radius: var(--radius-pill);
+  transition: width 0.45s var(--ease-out-expo), background-color 0.45s ease;
+}
+.dots--dark button i { background: var(--ghost); }
+.dots--dark button[aria-current="true"] i { width: 1.25rem; background: var(--ink); }
+.dots--light button i { background: rgba(255, 255, 255, 0.4); }
+.dots--light button[aria-current="true"] i { width: 1.25rem; background: #ffffff; }
+
+.brand-mark { width: 1.25rem; height: 1.25rem; flex: none; }
+.brand-lockup {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+}
+
+/* ==========================================================================
+   Loader
+   ========================================================================== */
+#loader {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: var(--brand-deep);
+  color: var(--on-brand);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  will-change: transform;
+}
+#loader-mark {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.5rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  opacity: 0;
+}
+#loader-mark svg { width: 1.75rem; height: 1.75rem; }
+#loader-track {
+  width: 10rem;
+  height: 1px;
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.2);
+  overflow: hidden;
+}
+#loader-fill {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: #ffffff;
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+
+/* ==========================================================================
+   Header
+   ========================================================================== */
+.site-header {
+  position: relative;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.5rem 1.5rem 0;
+  font-size: 0.75rem;
+  color: #ffffff;
+}
+@media (min-width: 640px) { .site-header { padding: 2rem 2.5rem 0; } }
+
+.header-nav { display: none; flex: 1; align-items: center; gap: 2rem; }
+@media (min-width: 1024px) { .header-nav { display: flex; } }
+.header-nav a { color: rgba(255, 255, 255, 0.9); transition: color 0.3s ease; }
+@media (hover: hover) { .header-nav a:hover { color: #ffffff; } }
+
+.header-brand { flex: 1; display: flex; align-items: center; }
+@media (min-width: 1024px) { .header-brand { justify-content: center; } }
+
+.header-right { flex: 1; display: flex; align-items: center; justify-content: flex-end; gap: 1rem; }
+@media (min-width: 640px) { .header-right { gap: 1.25rem; } }
+
+.header-cta {
+  display: none;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+  color: #ffffff;
+}
+@media (min-width: 640px) { .header-cta { display: inline-flex; } }
+@media (hover: hover) { .header-cta:hover { text-decoration: underline; } }
+
+.burger {
+  width: 2.5rem;
+  height: 2.5rem;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.15);
+  -webkit-backdrop-filter: blur(0.75rem);
+  backdrop-filter: blur(0.75rem);
+  flex: none;
+  transition: background-color 0.35s ease;
+}
+@media (hover: hover) { .burger:hover { background: rgba(255, 255, 255, 0.25); } }
+.burger i { display: flex; flex-direction: column; gap: 5px; }
+.burger i b { display: block; width: 1rem; height: 1px; background: #ffffff; }
+
+/* ==========================================================================
+   Hero
+   ========================================================================== */
+.hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border-radius: var(--radius-card-lg);
+  background: var(--brand-deep);
+  color: var(--on-brand);
+  height: calc(100svh - 1rem);
+  min-height: 36rem;
+  display: flex;
+  flex-direction: column;
+}
+@media (min-width: 640px) { .hero { height: calc(100svh - 1.5rem); } }
+
+.hero-bg { position: absolute; inset: 0; z-index: -10; overflow: hidden; }
+.hero-bg__inner {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -16%;
+  height: 132%;
+  width: 100%;
+  will-change: transform;
+}
+.hero-bg__inner img { width: 100%; height: 100%; object-fit: cover; }
+.hero-bg__grad {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(15, 47, 99, 0.65), rgba(15, 47, 99, 0.35), rgba(15, 47, 99, 0.75));
+}
+
+.hero-title-wrap { padding: 1rem 1.5rem 0; position: relative; z-index: 10; }
+@media (min-width: 640px) { .hero-title-wrap { padding-left: 2.5rem; padding-right: 2.5rem; } }
+.hero-title {
+  font-size: 12.5vw;
+  font-weight: 500;
+  text-transform: uppercase;
+  line-height: 0.85;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+
+.hero-bottom {
+  margin-top: auto;
+  position: relative;
+  z-index: 10;
+  padding: 0 1.5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+@media (min-width: 640px) {
+  .hero-bottom {
+    padding: 0 2.5rem 2.5rem;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+}
+
+.hero-tagline {
+  font-size: 2.4rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.hero-cluster { display: flex; align-items: flex-end; gap: 1rem; }
+
+/* Collection slider */
+.collection { display: none; width: 16rem; flex-direction: column; gap: 0.75rem; }
+@media (min-width: 768px) { .collection { display: flex; } }
+.collection__stage { position: relative; }
+.collection-card {
+  display: flex;
+  gap: 0.75rem;
+  border-radius: var(--radius-card);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.1);
+  padding: 0.75rem;
+  box-shadow: 0 1.25rem 2.5rem rgba(15, 47, 99, 0.2);
+  -webkit-backdrop-filter: blur(1rem);
+  backdrop-filter: blur(1rem);
+  will-change: transform, opacity;
+}
+.collection-card--ghost { position: absolute; inset: 0; pointer-events: none; }
+.collection-card img {
+  width: 3.5rem;
+  height: 3.5rem;
+  flex: none;
+  border-radius: 0.75rem;
+  object-fit: cover;
+}
+.collection-card__body { display: flex; flex-direction: column; justify-content: center; gap: 0.125rem; min-width: 0; }
+.collection-card__brand {
+  font-size: 0.7rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+.collection-card__title { font-size: 0.7rem; text-transform: uppercase; opacity: 0.8; }
+.collection-card__cta {
+  font-size: 0.65rem;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  margin-top: 0.25rem;
+  align-self: flex-start;
+}
+
+/* Membership card */
+.membership {
+  width: 100%;
+  max-width: 20rem;
+  display: flex;
+  align-items: stretch;
+  gap: 0.75rem;
+  border-radius: var(--radius-card);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.1);
+  padding: 0.75rem;
+  box-shadow: 0 1.25rem 2.5rem rgba(15, 47, 99, 0.2);
+  -webkit-backdrop-filter: blur(1rem);
+  backdrop-filter: blur(1rem);
+}
+@media (min-width: 640px) { .membership { max-width: 15rem; } }
+.membership__col { flex: 1; display: flex; flex-direction: column; justify-content: space-between; gap: 0.5rem; min-width: 0; }
+.membership__value { font-size: 1.875rem; font-weight: 500; line-height: 1; }
+.membership__caption { font-size: 0.65rem; opacity: 0.8; }
+.avatars { display: flex; }
+.avatars span {
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid rgba(15, 47, 99, 0.4);
+}
+.avatars span + span { margin-left: -0.5rem; }
+.membership__media { width: 4rem; flex: none; aspect-ratio: 3 / 4; border-radius: 0.75rem; overflow: hidden; }
+.membership__media img { width: 100%; height: 100%; object-fit: cover; }
+
+/* ==========================================================================
+   Trust
+   ========================================================================== */
+.trust {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: var(--background);
+  padding: 4rem 1.5rem;
+}
+@media (min-width: 640px) { .trust { padding: 5rem 2.5rem; } }
+
+.trust-top {
+  position: relative;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+@media (min-width: 640px) {
+  .trust-top { flex-direction: row; justify-content: space-between; align-items: flex-start; }
+}
+
+.pct-badge {
+  width: 7rem;
+  height: 7rem;
+  flex: none;
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 0.25rem;
+  padding: 0.5rem;
+}
+@media (min-width: 640px) { .pct-badge { width: 8rem; height: 8rem; } }
+.pct-badge__value { font-size: 1.5rem; font-weight: 500; line-height: 1; }
+.pct-badge__caption { font-size: 0.6rem; color: var(--ink-soft); max-width: 7em; line-height: 1.3; }
+
+.badge-card {
+  display: flex;
+  gap: 1rem;
+  max-width: 28rem;
+  border-radius: var(--radius-card);
+  background: var(--surface);
+  padding: 1.25rem;
+}
+@media (min-width: 640px) { .badge-card { gap: 1.25rem; padding: 1.5rem; } }
+.badge-card__chip {
+  align-self: flex-start;
+  flex: none;
+  border-radius: 0.75rem;
+  background: var(--background);
+  padding: 0.5rem 1rem;
+  font-size: 1.25rem;
+  font-weight: 500;
+  line-height: 1.2;
+}
+.badge-card__title { font-size: 1.125rem; font-weight: 500; }
+.badge-card__body { font-size: 0.75rem; color: var(--ink-soft); line-height: 1.625; margin-top: 0.5rem; }
+
+.ghost-heading {
+  position: relative;
+  z-index: 0;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+  max-width: 88rem;
+  margin: 3rem auto 0;
+  font-size: 8.2vw;
+  font-weight: 500;
+  text-transform: uppercase;
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+  color: var(--ghost);
+}
+.ghost-row { display: flex; justify-content: space-between; align-items: baseline; }
+.gw {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  padding-bottom: 0.12em;
+  will-change: transform;
+}
+.gw > span {
+  display: inline-block;
+  transform: translateY(115%);
+  opacity: 0;
+  will-change: transform, opacity;
+}
+.gw--ink { color: var(--ink); }
+
+.coach { position: relative; z-index: 10; width: 13rem; margin: 2.5rem auto 0; }
+@media (min-width: 640px) {
+  .coach { position: absolute; left: 50%; top: 50%; width: 16rem; margin: 0; transform: translate(-50%, -50%); }
+}
+.coach__card {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  border-radius: var(--radius-card);
+  background: var(--brand);
+  overflow: hidden;
+  will-change: transform, opacity;
+}
+.coach__card img { width: 100%; height: 100%; object-fit: cover; }
+.coach__caption {
+  position: absolute;
+  left: 0.75rem;
+  right: 0.75rem;
+  bottom: 0.75rem;
+  border-radius: 0.75rem;
+  background: rgba(15, 47, 99, 0.4);
+  color: #ffffff;
+  -webkit-backdrop-filter: blur(0.75rem);
+  backdrop-filter: blur(0.75rem);
+  padding: 0.5rem 0.75rem;
+}
+.coach__name { font-size: 0.875rem; font-weight: 500; }
+.coach__role { font-size: 0.65rem; opacity: 0.8; }
+
+.trust-controls {
+  position: relative;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 3rem;
+}
+@media (min-width: 640px) { .trust-controls { margin-top: 6rem; } }
+
+/* ==========================================================================
+   Programs
+   ========================================================================== */
+.programs { background: var(--surface); padding: 6rem 1.5rem; }
+@media (min-width: 640px) { .programs { padding-left: 2.5rem; padding-right: 2.5rem; } }
+.section-title { font-size: 3rem; font-weight: 500; line-height: 0.95; letter-spacing: -0.02em; margin-top: 1rem; }
+
+.program-list { margin-top: 3.5rem; }
+.program-row { display: block; border-top: 1px solid var(--hairline); }
+.program-list li:last-child .program-row { border-bottom: 1px solid var(--hairline); }
+.program-row:focus-visible { background: var(--background); }
+.program-row__inner {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1.75rem 0;
+  will-change: transform, opacity;
+}
+.program-row__index { width: 2.5rem; flex: none; font-size: 0.875rem; font-weight: 500; color: var(--ink-soft); }
+.program-row__text { flex: 1; min-width: 0; }
+.program-row__name { display: block; font-size: 1.5rem; font-weight: 500; letter-spacing: -0.02em; }
+@media (min-width: 640px) { .program-row__name { font-size: 1.875rem; } }
+.program-row__desc { display: block; font-size: 0.875rem; color: var(--ink-soft); margin-top: 0.25rem; }
+.program-row__arrow {
+  margin-left: auto;
+  flex: none;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--hairline);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+.program-row__arrow svg { width: 1.125rem; height: 1.125rem; opacity: 0.55; }
+
+/* ==========================================================================
+   Facilities
+   ========================================================================== */
+.facilities {
+  position: relative;
+  z-index: 1;
+  background: var(--background);
+  border-radius: var(--radius-card-lg);
+  margin-top: -2.5rem;
+  padding: 4rem 1.5rem 5rem;
+}
+@media (min-width: 640px) { .facilities { padding-left: 2.5rem; padding-right: 2.5rem; } }
+.facilities__grid { display: grid; grid-template-columns: 1fr; align-items: end; gap: 2.5rem; }
+@media (min-width: 768px) { .facilities__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.facilities__intro { max-width: 24rem; }
+.facilities__icon {
+  width: 4rem;
+  height: 4rem;
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  will-change: transform, opacity;
+}
+.facilities__icon img { width: 100%; height: 100%; object-fit: cover; }
+.facilities__title { font-size: 3rem; font-weight: 500; line-height: 0.95; letter-spacing: -0.02em; margin-top: 1.5rem; }
+.facilities__body { font-size: 0.875rem; color: var(--ink-soft); max-width: 20rem; margin-top: 1.5rem; line-height: 1.7; }
+
+.courts { display: flex; align-items: flex-end; gap: 1.25rem; }
+.court {
+  position: relative;
+  flex: 1;
+  aspect-ratio: 3 / 4;
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  background: var(--surface);
+  will-change: transform, opacity;
+}
+.court--offset { margin-bottom: 2rem; }
+.court img { width: 100%; height: 100%; object-fit: cover; will-change: transform; }
+.court__caption {
+  position: absolute;
+  left: 0.75rem;
+  right: 0.75rem;
+  bottom: 0.75rem;
+  border-radius: 0.75rem;
+  color: #ffffff;
+  -webkit-backdrop-filter: blur(0.75rem);
+  backdrop-filter: blur(0.75rem);
+  padding: 0.75rem 1rem;
+}
+.court__caption--clay { background: rgba(15, 47, 99, 0.4); }
+.court__caption--blue { background: rgba(11, 110, 151, 0.55); }
+.court__name { font-size: 0.875rem; font-weight: 500; }
+.court__desc { font-size: 0.65rem; opacity: 0.85; margin-top: 0.125rem; }
+
+/* ==========================================================================
+   Stats
+   ========================================================================== */
+.stats {
+  background: var(--brand-deep);
+  color: var(--on-brand);
+  border-radius: var(--radius-card-lg);
+  margin-top: 0.75rem;
+  padding: 5rem 1.5rem;
+}
+@media (min-width: 640px) { .stats { padding-left: 2.5rem; padding-right: 2.5rem; } }
+.stats__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 2rem;
+  row-gap: 3rem;
+  margin-top: 4rem;
+}
+@media (min-width: 1024px) { .stats__grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.stat { border-top: 1px solid rgba(255, 255, 255, 0.2); padding-top: 1.25rem; will-change: transform, opacity; }
+.stat__value { font-size: 3.75rem; font-weight: 500; line-height: 1; letter-spacing: -0.02em; }
+@media (min-width: 640px) { .stat__value { font-size: 4.5rem; } }
+.stat__label { display: block; font-size: 0.875rem; color: rgba(255, 255, 255, 0.65); margin-top: 0.75rem; }
+
+/* ==========================================================================
+   Testimonials
+   ========================================================================== */
+.testimonials { background: var(--background); padding: 5rem 1.5rem; }
+@media (min-width: 640px) { .testimonials { padding: 6rem 2.5rem; } }
+.testimonials__grid { display: grid; grid-template-columns: 1fr; gap: 1.25rem; margin-top: 3.5rem; }
+.testimonials__grid > li { will-change: transform; }
+@media (min-width: 768px) { .testimonials__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.testimonial {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  border-radius: var(--radius-card);
+  background: var(--surface);
+  padding: 1.75rem;
+  will-change: transform, opacity;
+}
+.testimonial__quote { font-size: 2.25rem; line-height: 1; color: var(--brand); }
+.testimonial blockquote { font-size: 1.125rem; line-height: 1.625; color: var(--ink); margin-top: 1rem; }
+.testimonial figcaption { border-top: 1px solid var(--hairline); padding-top: 1rem; margin-top: 1.5rem; }
+.testimonial__name { font-weight: 500; }
+.testimonial__role { font-size: 0.875rem; color: var(--ink-soft); }
+
+/* ==========================================================================
+   Footer
+   ========================================================================== */
+.site-footer {
+  background: var(--brand-deep);
+  color: var(--on-brand);
+  border-radius: var(--radius-card-lg);
+  margin-top: 0.75rem;
+  padding: 3.5rem 1.5rem;
+}
+@media (min-width: 640px) { .site-footer { padding: 4rem 2.5rem; } }
+
+.footer-cta {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  padding-bottom: 3.5rem;
+}
+@media (min-width: 640px) { .footer-cta { flex-direction: row; justify-content: space-between; align-items: flex-end; } }
+.footer-cta__title { font-size: 3.75rem; font-weight: 500; line-height: 0.92; letter-spacing: -0.02em; margin-top: 1rem; }
+
+.footer-grid { display: grid; grid-template-columns: 1fr; gap: 2.5rem; padding: 3.5rem 0; }
+@media (min-width: 768px) { .footer-grid { grid-template-columns: 1.4fr 1fr 1fr 1fr; } }
+.footer-brand { max-width: 20rem; }
+.footer-brand .brand-lockup { font-size: 1.125rem; }
+.footer-brand__blurb { font-size: 0.875rem; color: rgba(255, 255, 255, 0.65); margin-top: 1rem; line-height: 1.7; }
+.footer-address {
+  font-style: normal;
+  margin-top: 1.5rem;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.875rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+.footer-address span { color: rgba(255, 255, 255, 0.55); }
+.footer-col h3 {
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: rgba(255, 255, 255, 0.5);
+}
+.footer-col ul { margin-top: 1.25rem; font-size: 0.875rem; color: rgba(255, 255, 255, 0.8); display: flex; flex-direction: column; gap: 0.75rem; }
+@media (hover: hover) {
+  .footer-col a:hover, .footer-address a:hover, .footer-bottom a:hover { color: #ffffff; text-decoration: underline; }
+}
+.footer-bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  padding-top: 2rem;
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.6);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+@media (min-width: 640px) { .footer-bottom { flex-direction: row; justify-content: space-between; align-items: center; } }
+.footer-bottom nav { display: flex; flex-wrap: wrap; gap: 1.25rem; }
+
+/* ==========================================================================
+   Contact modal
+   ========================================================================== */
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0.75rem;
+  pointer-events: none;
+}
+@media (min-width: 640px) { .modal { align-items: center; padding: 1.5rem; } }
+.modal.is-open { pointer-events: auto; }
+.modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 47, 99, 0.4);
+  -webkit-backdrop-filter: blur(0.75rem);
+  backdrop-filter: blur(0.75rem);
+  opacity: 0;
+}
+.modal__panel {
+  position: relative;
+  width: 100%;
+  max-height: 92svh;
+  overflow-y: auto;
+  border-radius: var(--radius-card-lg);
+  background: var(--surface-card);
+  color: var(--ink);
+  padding: 1.5rem;
+  box-shadow: 0 2rem 4rem rgba(15, 47, 99, 0.35);
+  opacity: 0;
+  will-change: transform, opacity;
+}
+@media (min-width: 640px) { .modal__panel { max-width: 32rem; padding: 2rem; } }
+.modal__head { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
+.modal__title { font-size: 2.25rem; font-weight: 500; line-height: 0.95; letter-spacing: -0.02em; margin-top: 0.75rem; }
+@media (min-width: 640px) { .modal__title { font-size: 3rem; } }
+
+.icon-btn {
+  width: 2.5rem;
+  height: 2.5rem;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  transition: background-color 0.35s ease;
+}
+@media (hover: hover) { .icon-btn:hover { background: var(--hairline); } }
+.icon-btn svg { width: 1.125rem; height: 1.125rem; }
+.icon-btn--light { background: rgba(255, 255, 255, 0.15); color: #ffffff; }
+@media (hover: hover) { .icon-btn--light:hover { background: rgba(255, 255, 255, 0.25); } }
+
+.modal__form { margin-top: 1.75rem; display: flex; flex-direction: column; gap: 1rem; }
+.field { display: flex; flex-direction: column; gap: 0.5rem; }
+.field > span {
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--ink-soft);
+}
+.field input, .field textarea {
+  width: 100%;
+  border-radius: 0.75rem;
+  border: 1px solid var(--hairline);
+  background: var(--background);
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  resize: vertical;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+.field input:focus, .field textarea:focus {
+  outline: none;
+  border-color: var(--brand-light);
+  box-shadow: 0 0 0 2px var(--brand-light);
+}
+.modal__submit { align-self: flex-start; margin-top: 0.5rem; }
+.modal__success {
+  margin-top: 2rem;
+  border-radius: var(--radius-card);
+  background: var(--surface);
+  padding: 1.5rem;
+  text-align: center;
+}
+.modal__success-icon {
+  width: 3rem;
+  height: 3rem;
+  margin: 0 auto;
+  border-radius: var(--radius-pill);
+  background: var(--brand);
+  color: #ffffff;
+  display: grid;
+  place-items: center;
+}
+.modal__success-icon svg { width: 1.25rem; height: 1.25rem; }
+.modal__success h3 { font-size: 1.125rem; font-weight: 500; margin-top: 1rem; }
+.modal__success p { font-size: 0.875rem; color: var(--ink-soft); margin-top: 0.5rem; }
+[hidden] { display: none !important; }
+
+/* ==========================================================================
+   Menu overlay
+   ========================================================================== */
+.menu {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  display: flex;
+  flex-direction: column;
+  pointer-events: none;
+}
+.menu.is-open { pointer-events: auto; }
+.menu__backdrop { position: absolute; inset: 0; background: var(--brand-deep); opacity: 0; }
+.menu__panel {
+  position: relative;
+  flex: 1;
+  display: flex;
+  padding: 0.5rem;
+  color: #ffffff;
+  opacity: 0;
+  will-change: transform, opacity;
+}
+@media (min-width: 640px) { .menu__panel { padding: 0.75rem; } }
+.menu__inner { flex: 1; display: flex; flex-direction: column; padding: 1.5rem; }
+@media (min-width: 640px) { .menu__inner { padding: 2rem 2.5rem; } }
+.menu__top { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.menu__nav { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 0.5rem; }
+.menu__nav a {
+  display: block;
+  font-size: 3rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+  will-change: transform, opacity;
+  transition: color 0.3s ease;
+}
+@media (min-width: 640px) { .menu__nav a { font-size: 4.5rem; } }
+@media (hover: hover) { .menu__nav a:hover { color: var(--brand-light); } }
+.menu__bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  padding-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+@media (min-width: 640px) { .menu__bottom { flex-direction: row; justify-content: space-between; align-items: center; } }
+.menu__social { display: flex; flex-wrap: wrap; gap: 1.25rem; font-size: 0.875rem; color: rgba(255, 255, 255, 0.7); }
+@media (hover: hover) { .menu__social a:hover { color: #ffffff; } }
+</style>
+<noscript><style>
+  .word > span, .line > span, .gw > span { transform: none !important; opacity: 1 !important; }
+  .reveal, .words-src { opacity: 1 !important; transform: none !important; }
+  #loader { display: none !important; }
+</style></noscript>
+</head>
+<body>
+
+<!-- =========================================================================
+     Loader
+     ========================================================================= -->
+<div id="loader">
+  <div id="loader-mark">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+      <circle cx="12" cy="12" r="9" />
+      <path d="M4.8 5.6A9 9 0 0 0 4.8 18.4" />
+      <path d="M19.2 5.6a9 9 0 0 1 0 12.8" />
+    </svg>
+    <span>Baseline</span>
+  </div>
+  <div id="loader-track"><b id="loader-fill"></b></div>
+</div>
+
+<main>
+
+  <!-- =======================================================================
+       Hero
+       ======================================================================= -->
+  <section class="hero" id="top">
+    <div class="hero-bg" aria-hidden="true">
+      <div class="hero-bg__inner" id="hero-plate">
+        <img src="https://api.getlayers.ai/storage/v1/object/public/public/assets/baseline-88535e4000/hero/hero-court.webp"
+             alt="Player lunging for a shot on a hard court" fetchpriority="high" loading="eager" decoding="async" />
+      </div>
+      <div class="hero-bg__grad"></div>
+    </div>
+
+    <header class="site-header">
+      <nav class="header-nav" aria-label="Primary">
+        <a href="#programs">Programs &amp; Coaches</a>
+        <a href="#facilities">Club &amp; Events</a>
+      </nav>
+      <div class="header-brand">
+        <a class="brand-lockup" href="#top" aria-label="Baseline — home">
+          <svg class="brand-mark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="9" />
+            <path d="M4.8 5.6A9 9 0 0 0 4.8 18.4" />
+            <path d="M19.2 5.6a9 9 0 0 1 0 12.8" />
+          </svg>
+          <span>Baseline</span>
+        </a>
+      </div>
+      <div class="header-right">
+        <button type="button" class="header-cta" data-open-modal>Book a Visit</button>
+        <button type="button" class="burger" data-open-menu aria-label="Open menu" aria-expanded="false" aria-controls="menu">
+          <i aria-hidden="true"><b></b><b></b></i>
+        </button>
+      </div>
+    </header>
+
+    <div class="hero-title-wrap">
+      <h1 class="hero-title" id="hero-title"><span class="word"><span>Own</span></span> <span class="word"><span>The</span></span> <span class="word"><span>Court</span></span></h1>
+    </div>
+
+    <div class="hero-bottom">
+      <p class="hero-tagline" id="hero-tagline">
+        <span class="line"><span>Show Up,</span></span>
+        <span class="line"><span>Level Up</span></span>
+      </p>
+
+      <div class="hero-cluster">
+        <div class="collection reveal" id="collection">
+          <div class="collection__stage">
+            <article class="collection-card" id="collection-card">
+              <img id="collection-img" src="https://api.getlayers.ai/storage/v1/object/public/public/assets/baseline-88535e4000/2.webp"
+                   alt="Player driving a backhand on a hard court" loading="lazy" decoding="async" />
+              <div class="collection-card__body">
+                <p class="collection-card__brand" id="collection-brand">Baseline Pro</p>
+                <p class="collection-card__title" id="collection-title">Featured Gear</p>
+                <a class="collection-card__cta" id="collection-cta" href="#shop">Shop the kit →</a>
+              </div>
+            </article>
+          </div>
+          <div class="dots dots--light" id="collection-dots" role="tablist" aria-label="Collections"></div>
+        </div>
+
+        <article class="membership reveal" id="membership">
+          <div class="membership__col">
+            <p class="membership__value">9K+</p>
+            <div class="avatars" aria-hidden="true">
+              <span style="background:#5790e6"></span>
+              <span style="background:#c2e029"></span>
+              <span style="background:#0b6e97"></span>
+              <span style="background:#ffffff"></span>
+            </div>
+            <p class="membership__caption">Members on court</p>
+          </div>
+          <div class="membership__media">
+            <img src="https://api.getlayers.ai/storage/v1/object/public/public/assets/baseline-88535e4000/1.webp"
+                 alt="Player waiting to return on a clay court" loading="lazy" decoding="async" />
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- =======================================================================
+       Trust
+       ======================================================================= -->
+  <section class="trust" id="trust" aria-labelledby="trust-title">
+    <div class="trust-top">
+      <div class="pct-badge reveal" id="pct-badge">
+        <p class="pct-badge__value">100%</p>
+        <p class="pct-badge__caption">Coaching built around your game</p>
+      </div>
+      <article class="badge-card reveal" id="badge-card">
+        <p class="badge-card__chip">#01</p>
+        <div>
+          <h3 class="badge-card__title">Trusted by serious players</h3>
+          <p class="badge-card__body">From first-timers to nationally ranked juniors, players train here because the progress shows up on the scoreboard.</p>
+        </div>
+      </article>
+    </div>
+
+    <h2 class="ghost-heading" id="trust-title">
+      <span class="ghost-row">
+        <span class="gw" data-gi="0"><span>Expert</span></span>
+        <span class="gw" data-gi="1"><span>Result-</span></span>
+      </span>
+      <span class="ghost-row">
+        <span class="gw gw--ink" data-gi="2"><span>Driven</span></span>
+        <span class="gw" data-gi="3"><span>Coaching</span></span>
+      </span>
+    </h2>
+
+    <div class="coach">
+      <figure class="coach__card reveal" id="coach-card">
+        <img id="coach-img" src="https://api.getlayers.ai/storage/v1/object/public/public/assets/baseline-88535e4000/5.webp"
+             alt="Head coach set in a ready stance on clay" loading="lazy" decoding="async" />
+        <figcaption class="coach__caption">
+          <p class="coach__name" id="coach-name">Marco Vidal</p>
+          <p class="coach__role" id="coach-role">Head Coach</p>
+        </figcaption>
+      </figure>
+    </div>
+
+    <div class="trust-controls">
+      <button type="button" class="arrow-btn arrow-btn--outline" id="trust-prev" aria-label="Previous coach">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" data-flip aria-hidden="true">
+          <path d="M5 12h14M13 6l6 6-6 6" />
+        </svg>
+      </button>
+      <div class="dots dots--dark" id="trust-dots" role="tablist" aria-label="Coaches"></div>
+      <button type="button" class="arrow-btn arrow-btn--solid" id="trust-next" aria-label="Next coach">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M5 12h14M13 6l6 6-6 6" />
+        </svg>
+      </button>
+    </div>
+  </section>
+
+  <!-- =======================================================================
+       Programs
+       ======================================================================= -->
+  <section class="programs" id="programs" aria-labelledby="programs-title">
+    <span class="eyebrow eyebrow--dark"><i aria-hidden="true"></i>Training programs</span>
+    <h2 class="section-title stacked" id="programs-title">
+      <span class="line"><span>Built for</span></span>
+      <span class="line"><span>every level</span></span>
+    </h2>
+
+    <ul class="program-list">
+      <li>
+        <a class="program-row" href="#junior">
+          <div class="program-row__inner reveal">
+            <span class="program-row__index">01</span>
+            <span class="program-row__text">
+              <span class="program-row__name">Junior Development</span>
+              <span class="program-row__desc">Fundamentals, footwork, and match play for ages 6–14.</span>
+            </span>
+            <span class="program-row__arrow" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 12h14M13 6l6 6-6 6" />
+              </svg>
+            </span>
+          </div>
+        </a>
+      </li>
+      <li>
+        <a class="program-row" href="#performance">
+          <div class="program-row__inner reveal">
+            <span class="program-row__index">02</span>
+            <span class="program-row__text">
+              <span class="program-row__name">Performance Squad</span>
+              <span class="program-row__desc">High-volume training for competitive and ranked players.</span>
+            </span>
+            <span class="program-row__arrow" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 12h14M13 6l6 6-6 6" />
+              </svg>
+            </span>
+          </div>
+        </a>
+      </li>
+      <li>
+        <a class="program-row" href="#adult">
+          <div class="program-row__inner reveal">
+            <span class="program-row__index">03</span>
+            <span class="program-row__text">
+              <span class="program-row__name">Adult Clinics</span>
+              <span class="program-row__desc">Small-group sessions to sharpen technique and fitness.</span>
+            </span>
+            <span class="program-row__arrow" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 12h14M13 6l6 6-6 6" />
+              </svg>
+            </span>
+          </div>
+        </a>
+      </li>
+      <li>
+        <a class="program-row" href="#private">
+          <div class="program-row__inner reveal">
+            <span class="program-row__index">04</span>
+            <span class="program-row__text">
+              <span class="program-row__name">Private Coaching</span>
+              <span class="program-row__desc">One-to-one sessions tailored to your goals and schedule.</span>
+            </span>
+            <span class="program-row__arrow" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 12h14M13 6l6 6-6 6" />
+              </svg>
+            </span>
+          </div>
+        </a>
+      </li>
+    </ul>
+  </section>
+
+  <!-- =======================================================================
+       Facilities
+       ======================================================================= -->
+  <section class="facilities" id="facilities" aria-labelledby="facilities-title">
+    <div class="facilities__grid">
+      <div class="facilities__intro">
+        <div class="facilities__icon reveal" id="facilities-icon">
+          <img src="https://api.getlayers.ai/storage/v1/object/public/public/assets/baseline-88535e4000/3.webp"
+               alt="Player stretching for a forehand on clay" loading="lazy" decoding="async" />
+        </div>
+        <h2 class="facilities__title stacked" id="facilities-title" data-stagger="120">
+          <span class="line"><span>Tour Our</span></span>
+          <span class="line"><span>World-Class</span></span>
+          <span class="line"><span>Courts</span></span>
+        </h2>
+        <p class="facilities__body words-src" id="facilities-body">Reserve a court for focused practice, squad drills, or private sessions — and train in the same conditions you'll compete in.</p>
+      </div>
+
+      <div class="courts">
+        <figure class="court reveal" data-court="0">
+          <img src="https://api.getlayers.ai/storage/v1/object/public/public/assets/baseline-88535e4000/1.webp"
+               alt="Player on the baseline of an outdoor clay court" loading="lazy" decoding="async" />
+          <figcaption class="court__caption court__caption--clay">
+            <p class="court__name">Redline Clay</p>
+            <p class="court__desc">A fast outdoor clay court tuned for long, physical rallies.</p>
+          </figcaption>
+        </figure>
+        <figure class="court court--offset reveal" data-court="1">
+          <img src="https://api.getlayers.ai/storage/v1/object/public/public/assets/baseline-88535e4000/4.webp"
+               alt="Player following through on a blue hard court" loading="lazy" decoding="async" />
+          <figcaption class="court__caption court__caption--blue">
+            <p class="court__name">Harbor Court</p>
+            <p class="court__desc">A sheltered hard court built for precision and night play.</p>
+          </figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- =======================================================================
+       Stats
+       ======================================================================= -->
+  <section class="stats" aria-labelledby="stats-title">
+    <span class="eyebrow eyebrow--light"><i aria-hidden="true"></i>By the numbers</span>
+    <h2 class="section-title stacked" id="stats-title">
+      <span class="line"><span>A club that</span></span>
+      <span class="line"><span>keeps score</span></span>
+    </h2>
+
+    <dl class="stats__grid">
+      <div class="stat reveal">
+        <dt class="sr-only">Certified coaches</dt>
+        <dd><span class="stat__value">24</span><span class="stat__label">Certified coaches</span></dd>
+      </div>
+      <div class="stat reveal">
+        <dt class="sr-only">Championship courts</dt>
+        <dd><span class="stat__value">12</span><span class="stat__label">Championship courts</span></dd>
+      </div>
+      <div class="stat reveal">
+        <dt class="sr-only">Members training</dt>
+        <dd><span class="stat__value">9K+</span><span class="stat__label">Members training</span></dd>
+      </div>
+      <div class="stat reveal">
+        <dt class="sr-only">Years on the baseline</dt>
+        <dd><span class="stat__value">15</span><span class="stat__label">Years on the baseline</span></dd>
+      </div>
+    </dl>
+  </section>
+
+  <!-- =======================================================================
+       Testimonials
+       ======================================================================= -->
+  <section class="testimonials" id="testimonials" aria-labelledby="testimonials-title">
+    <span class="eyebrow eyebrow--dark"><i aria-hidden="true"></i>What players say</span>
+    <h2 class="section-title stacked" id="testimonials-title">
+      <span class="line"><span>Loved by</span></span>
+      <span class="line"><span>the locker room</span></span>
+    </h2>
+
+    <ul class="testimonials__grid">
+      <li>
+        <figure class="testimonial reveal">
+          <div>
+            <p class="testimonial__quote" aria-hidden="true">&ldquo;</p>
+            <blockquote>I added a level to my serve in one season. The coaching is detailed and it actually sticks.</blockquote>
+          </div>
+          <figcaption>
+            <p class="testimonial__name">Priya Anand</p>
+            <p class="testimonial__role">Performance Squad</p>
+          </figcaption>
+        </figure>
+      </li>
+      <li>
+        <figure class="testimonial reveal">
+          <div>
+            <p class="testimonial__quote" aria-hidden="true">&ldquo;</p>
+            <blockquote>Best courts in the city and a team that treats every member like a competitor.</blockquote>
+          </div>
+          <figcaption>
+            <p class="testimonial__name">Lukas Brenner</p>
+            <p class="testimonial__role">Adult Clinics</p>
+          </figcaption>
+        </figure>
+      </li>
+      <li>
+        <figure class="testimonial reveal">
+          <div>
+            <p class="testimonial__quote" aria-hidden="true">&ldquo;</p>
+            <blockquote>My daughter went from shy beginner to club champion. Worth every minute.</blockquote>
+          </div>
+          <figcaption>
+            <p class="testimonial__name">Dana Okafor</p>
+            <p class="testimonial__role">Parent, Junior Development</p>
+          </figcaption>
+        </figure>
+      </li>
+    </ul>
+  </section>
+
+  <!-- =======================================================================
+       Footer
+       ======================================================================= -->
+  <footer class="site-footer" id="contact">
+    <div class="footer-cta">
+      <div>
+        <span class="eyebrow eyebrow--light"><i aria-hidden="true"></i>Get started</span>
+        <p class="footer-cta__title stacked" id="footer-cta-title">
+          <span class="line"><span>Ready to</span></span>
+          <span class="line"><span>play?</span></span>
+        </p>
+      </div>
+      <button type="button" class="pill pill--light reveal" id="footer-pill" data-open-modal>
+        <span>Book a Visit</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M5 12h14M13 6l6 6-6 6" />
+        </svg>
+      </button>
+    </div>
+
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <span class="brand-lockup">
+          <svg class="brand-mark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="9" />
+            <path d="M4.8 5.6A9 9 0 0 0 4.8 18.4" />
+            <path d="M19.2 5.6a9 9 0 0 1 0 12.8" />
+          </svg>
+          <span>Baseline</span>
+        </span>
+        <p class="footer-brand__blurb">A members' tennis club and academy where focused coaching meets championship courts.</p>
+        <address class="footer-address">
+          <a href="mailto:play@baseline.club">play@baseline.club</a>
+          <a href="tel:+12125550148">+1 (212) 555-0148</a>
+          <span>120 Court Lane, New York</span>
+        </address>
+      </div>
+
+      <nav class="footer-col" aria-label="Programs">
+        <h3>Programs</h3>
+        <ul>
+          <li><a href="#junior">Junior Development</a></li>
+          <li><a href="#performance">Performance Squad</a></li>
+          <li><a href="#adult">Adult Clinics</a></li>
+          <li><a href="#private">Private Coaching</a></li>
+        </ul>
+      </nav>
+
+      <nav class="footer-col" aria-label="Club">
+        <h3>Club</h3>
+        <ul>
+          <li><a href="#membership">Membership</a></li>
+          <li><a href="#facilities">Facilities</a></li>
+          <li><a href="#club">Events</a></li>
+          <li><a href="#shop">Pro Shop</a></li>
+        </ul>
+      </nav>
+
+      <nav class="footer-col" aria-label="Company">
+        <h3>Company</h3>
+        <ul>
+          <li><a href="#about">About</a></li>
+          <li><a href="#programs">Coaches</a></li>
+          <li><a href="#careers">Careers</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+
+    <div class="footer-bottom">
+      <p>© 2026 Baseline Tennis Club. All rights reserved.</p>
+      <nav aria-label="Social">
+        <a href="#instagram">Instagram</a>
+        <a href="#x">X</a>
+        <a href="#youtube">YouTube</a>
+        <a href="#linkedin">LinkedIn</a>
+      </nav>
+      <nav aria-label="Legal">
+        <a href="#privacy">Privacy</a>
+        <a href="#terms">Terms</a>
+      </nav>
+    </div>
+  </footer>
+
+</main>
+
+<!-- =========================================================================
+     Menu overlay
+     ========================================================================= -->
+<div class="menu" id="menu" aria-hidden="true">
+  <div class="menu__backdrop" data-close-menu></div>
+  <div class="menu__panel" id="menu-panel">
+    <div class="menu__inner">
+      <div class="menu__top">
+        <span class="brand-lockup">
+          <svg class="brand-mark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="9" />
+            <path d="M4.8 5.6A9 9 0 0 0 4.8 18.4" />
+            <path d="M19.2 5.6a9 9 0 0 1 0 12.8" />
+          </svg>
+          <span>Baseline</span>
+        </span>
+        <button type="button" class="icon-btn icon-btn--light" data-close-menu aria-label="Close menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" data-x-icon aria-hidden="true">
+            <path d="M6 6l12 12M18 6L6 18" />
+          </svg>
+        </button>
+      </div>
+
+      <nav class="menu__nav" aria-label="Menu">
+        <a href="#programs" data-menu-link>Programs</a>
+        <a href="#facilities" data-menu-link>Facilities</a>
+        <a href="#testimonials" data-menu-link>Reviews</a>
+        <a href="#contact" data-menu-link>Contact</a>
+      </nav>
+
+      <div class="menu__bottom">
+        <button type="button" class="pill pill--light" data-menu-book>
+          <span>Book a Visit</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M5 12h14M13 6l6 6-6 6" />
+          </svg>
+        </button>
+        <nav class="menu__social" aria-label="Social">
+          <a href="#instagram">Instagram</a>
+          <a href="#x">X</a>
+          <a href="#youtube">YouTube</a>
+          <a href="#linkedin">LinkedIn</a>
+        </nav>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- =========================================================================
+     Contact modal
+     ========================================================================= -->
+<div class="modal" id="modal" aria-hidden="true">
+  <div class="modal__backdrop" data-close-modal></div>
+  <div class="modal__panel" role="dialog" aria-modal="true" aria-labelledby="modal-title" id="modal-panel">
+    <div class="modal__head">
+      <div>
+        <span class="eyebrow eyebrow--dark"><i aria-hidden="true"></i>Book a visit</span>
+        <h2 class="modal__title stacked" id="modal-title" data-stagger="90" data-duration="800">
+          <span class="line"><span>Come see</span></span>
+          <span class="line"><span>the courts</span></span>
+        </h2>
+      </div>
+      <button type="button" class="icon-btn" data-close-modal aria-label="Close">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" data-x-icon aria-hidden="true">
+          <path d="M6 6l12 12M18 6L6 18" />
+        </svg>
+      </button>
+    </div>
+
+    <form class="modal__form" id="modal-form" novalidate>
+      <label class="field">
+        <span>Full name</span>
+        <input type="text" name="name" id="modal-name" placeholder="Alex Rivera" autocomplete="name" />
+      </label>
+      <label class="field">
+        <span>Email</span>
+        <input type="email" name="email" placeholder="you@email.com" autocomplete="email" />
+      </label>
+      <label class="field">
+        <span>What would you like to play?</span>
+        <textarea name="message" rows="3" placeholder="I'd love to try a private lesson on the clay courts…"></textarea>
+      </label>
+      <button type="submit" class="pill pill--solid modal__submit" id="modal-submit">Request a visit</button>
+    </form>
+
+    <div class="modal__success" id="modal-success" hidden>
+      <div class="modal__success-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M5 13l4 4L19 7" />
+        </svg>
+      </div>
+      <h3>Request received</h3>
+      <p id="modal-success-text">Thanks, there — our team will be in touch to lock in your visit.</p>
+      <button type="button" class="pill pill--solid" data-close-modal style="margin-top:1.5rem">Done</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import Lenis from "lenis";
+
+/* =========================================================================
+   0. Constants
+   ========================================================================= */
+const ASSETS = "https://api.getlayers.ai/storage/v1/object/public/public/assets/baseline-88535e4000";
+const EASE = {
+  outExpo: "cubic-bezier(0.16, 1, 0.3, 1)",
+  outQuart: "cubic-bezier(0.25, 1, 0.5, 1)",
+  inOutCubic: "cubic-bezier(0.65, 0, 0.35, 1)",
+};
+const LOADER = { MIN_VISIBLE_MS: 1400, MAX_VISIBLE_MS: 2600, EXIT_MS: 850 };
+const REDUCED = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const mqHover = window.matchMedia("(min-width: 769px)");
+const $ = (sel, ctx = document) => ctx.querySelector(sel);
+const $$ = (sel, ctx = document) => Array.from(ctx.querySelectorAll(sel));
+const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
+
+/* =========================================================================
+   1. Adaptive rem grid (resize handled by the head script too — idempotent)
+   ========================================================================= */
+const FONT_BASE = 16, BASE_W = 1920, COEF = 0.6666;
+function applyRootFontSize() {
+  const reduction = ((BASE_W - window.innerWidth) / BASE_W) * 100 * COEF;
+  const size = FONT_BASE - (FONT_BASE * reduction) / 100;
+  if (size > FONT_BASE) document.documentElement.style.fontSize = size + "px";
+  else document.documentElement.style.removeProperty("font-size");
+}
+applyRootFontSize();
+window.addEventListener("resize", applyRootFontSize);
+
+/* =========================================================================
+   2. Spring engine — matches react-spring's { tension, friction } model
+      (mass 1, dt in seconds: a = -tension*(x - target) - friction*v)
+   ========================================================================= */
+const SPRINGS = new Set();
+
+function makeSpring(initial, config, apply) {
+  const keys = Object.keys(initial);
+  const s = {
+    keys,
+    x: { ...initial },
+    v: Object.fromEntries(keys.map((k) => [k, 0])),
+    target: { ...initial },
+    tension: config.tension,
+    friction: config.friction,
+    apply,
+  };
+  s.set = (target) => {
+    Object.assign(s.target, target);
+    SPRINGS.add(s);
+  };
+  s.jump = (values) => {
+    Object.assign(s.x, values);
+    Object.assign(s.target, values);
+    for (const k of keys) s.v[k] = 0;
+    s.apply(s.x);
+  };
+  s.step = (dt) => {
+    const sub = 1 / 240;
+    let rem = dt;
+    while (rem > 0) {
+      const h = Math.min(sub, rem);
+      rem -= h;
+      for (const k of s.keys) {
+        const a = -s.tension * (s.x[k] - s.target[k]) - s.friction * s.v[k];
+        s.v[k] += a * h;
+        s.x[k] += s.v[k] * h;
+      }
+    }
+    let moving = false;
+    for (const k of s.keys) {
+      if (Math.abs(s.v[k]) > 0.03 || Math.abs(s.x[k] - s.target[k]) > 0.004) { moving = true; break; }
+    }
+    if (!moving) {
+      for (const k of s.keys) { s.x[k] = s.target[k]; s.v[k] = 0; }
+      SPRINGS.delete(s);
+    }
+    s.apply(s.x);
+  };
+  apply(s.x);
+  return s;
+}
+
+/* Build a transform/opacity applier from a spring value bag. */
+function styler(el, extra = "", unit = "px") {
+  return (v) => {
+    let t = "";
+    if ("x" in v) t += `translateX(${v.x}${unit}) `;
+    if ("y" in v) t += `translateY(${v.y}px) `;
+    if ("scale" in v) t += `scale(${v.scale}) `;
+    if ("rotate" in v) t += `rotate(${v.rotate}deg) `;
+    if (extra) t += extra;
+    const next = t.trim();
+    if (next) el.style.transform = next;
+    if ("opacity" in v) el.style.opacity = String(v.opacity);
+  };
+}
+
+/* =========================================================================
+   3. In-view observer
+   ========================================================================= */
+const io = new IntersectionObserver(
+  (entries) => {
+    for (const e of entries) {
+      if (!e.isIntersecting) continue;
+      const fn = e.target.__inview;
+      e.target.__inview = null;
+      io.unobserve(e.target);
+      if (fn) fn();
+    }
+  },
+  { threshold: 0.12, rootMargin: "0px 0px -8% 0px" }
+);
+function onInview(el, fn) {
+  if (!el) return;
+  el.__inview = fn;
+  io.observe(el);
+}
+
+/* Inview spring reveal: from -> to, once, after delayIn. */
+function inviewSpring(el, from, to, config, delayIn = 0, extra = "") {
+  if (!el) return null;
+  const sp = makeSpring({ ...from }, config, styler(el, extra));
+  el.style.opacity = String(from.opacity ?? 1);
+  onInview(el, () => {
+    if (delayIn) setTimeout(() => sp.set(to), delayIn);
+    else sp.set(to);
+  });
+  return sp;
+}
+
+/* Immediate (non-observed) spring reveal — used for loader-gated hero bits. */
+function playSpring(el, from, to, config, delayIn = 0, extra = "") {
+  const sp = makeSpring({ ...from }, config, styler(el, extra));
+  if (delayIn) setTimeout(() => sp.set(to), delayIn);
+  else sp.set(to);
+  return sp;
+}
+
+/* =========================================================================
+   4. Hover springs (disabled at <= 768px)
+   ========================================================================= */
+function hoverSpring(trigger, target, from, to, config, extra = "", unit = "px") {
+  if (!trigger || !target) return;
+  const sp = makeSpring({ ...from }, config, styler(target, extra, unit));
+  const enter = () => { if (mqHover.matches) sp.set(to); };
+  const leave = () => sp.set(from);
+  trigger.addEventListener("pointerenter", enter);
+  trigger.addEventListener("pointerleave", leave);
+  trigger.addEventListener("focusin", enter);
+  trigger.addEventListener("focusout", leave);
+}
+
+/* =========================================================================
+   5. Clip-mask text reveals
+   ========================================================================= */
+function playSpans(spans, opts = {}) {
+  const {
+    stagger = 120,
+    baseDelay = 0,
+    duration = 950,
+    easing = EASE.outExpo,
+    fromY = "115%",
+  } = opts;
+  spans.forEach((span, i) => {
+    span.style.transition = "none";
+    span.style.transform = `translateY(${fromY})`;
+    span.style.opacity = "0";
+    void span.offsetWidth; /* flush */
+    const delay = baseDelay + i * stagger;
+    span.style.transition =
+      `transform ${duration}ms ${easing} ${delay}ms, opacity ${duration}ms ${easing} ${delay}ms`;
+    span.style.transform = "translateY(0)";
+    span.style.opacity = "1";
+  });
+}
+
+/* Stacked lines (defaults: stagger 120, duration 950, easeOutExpo). */
+function playLines(el, opts = {}) {
+  if (!el) return;
+  playSpans($$(":scope > .line > span", el), {
+    stagger: Number(el.dataset.stagger || opts.stagger || 120),
+    duration: Number(el.dataset.duration || opts.duration || 950),
+    baseDelay: opts.baseDelay || 0,
+    easing: opts.easing || EASE.outExpo,
+  });
+}
+
+/* Word-by-word from a plain-text source element. */
+function splitWords(el) {
+  if (el.__words) return el.__words;
+  const words = el.textContent.trim().split(/\s+/);
+  el.textContent = "";
+  words.forEach((w, i) => {
+    if (i > 0) el.appendChild(document.createTextNode(" "));
+    const box = document.createElement("span");
+    box.className = "word";
+    const inner = document.createElement("span");
+    inner.textContent = w;
+    box.appendChild(inner);
+    el.appendChild(box);
+  });
+  el.classList.remove("words-src");
+  el.style.opacity = "1";
+  el.__words = $$(".word > span", el);
+  return el.__words;
+}
+
+/* =========================================================================
+   6. Lenis + scroll lock + rAF loop
+   ========================================================================= */
+window.scrollTo(0, 0);
+const lenis = new Lenis({ smoothWheel: true });
+
+let lockCount = 0;
+function lockScroll() {
+  lockCount += 1;
+  if (lockCount === 1) {
+    lenis.stop();
+    document.documentElement.classList.add("is-locked");
+  }
+}
+function unlockScroll() {
+  lockCount = Math.max(0, lockCount - 1);
+  if (lockCount === 0) {
+    lenis.start();
+    document.documentElement.classList.remove("is-locked");
+  }
+}
+
+const parallaxJobs = [];
+function addParallax(el, section, from, to, axis = "y") {
+  if (!el || !section) return;
+  parallaxJobs.push({ el, section, from, to, axis, last: null });
+}
+function sectionProgress(section) {
+  const r = section.getBoundingClientRect();
+  const vh = window.innerHeight;
+  const total = vh + r.height;
+  if (total <= 0) return 0;
+  return clamp((vh - r.top) / total, 0, 1);
+}
+function updateParallax() {
+  for (const job of parallaxJobs) {
+    const p = sectionProgress(job.section);
+    const value = job.from + (job.to - job.from) * p;
+    if (job.last !== null && Math.abs(value - job.last) < 0.002) continue;
+    job.last = value;
+    job.el.style.transform =
+      job.axis === "y" ? `translate3d(0, ${value}%, 0)` : `translate3d(${value}%, 0, 0)`;
+  }
+}
+
+let lastT = null;
+function raf(t) {
+  lenis.raf(t);
+  if (lastT === null) lastT = t;
+  const dt = Math.min((t - lastT) / 1000, 0.064);
+  lastT = t;
+  if (SPRINGS.size) for (const s of Array.from(SPRINGS)) s.step(dt);
+  updateParallax();
+  requestAnimationFrame(raf);
+}
+requestAnimationFrame(raf);
+
+/* Smooth-scroll in-page anchors that actually resolve. */
+document.addEventListener("click", (e) => {
+  const a = e.target.closest && e.target.closest('a[href^="#"]');
+  if (!a) return;
+  const id = a.getAttribute("href");
+  if (!id || id === "#") return;
+  const target = document.querySelector(id);
+  if (!target) return;
+  e.preventDefault();
+  lenis.scrollTo(target);
+});
+
+/* =========================================================================
+   7. Loader
+   ========================================================================= */
+const loaderEl = $("#loader");
+const loaderMark = $("#loader-mark");
+const loaderFill = $("#loader-fill");
+let ready = false;
+const readyCallbacks = [];
+function onReady(fn) { ready ? fn() : readyCallbacks.push(fn); }
+
+lockScroll();
+playSpring(loaderMark, { opacity: 0, y: 16 }, { opacity: 1, y: 0 }, { tension: 200, friction: 22 });
+
+{
+  const fillDuration = LOADER.MIN_VISIBLE_MS - 120;
+  loaderFill.style.transition = `transform ${fillDuration}ms ${EASE.inOutCubic} 120ms`;
+  requestAnimationFrame(() => { loaderFill.style.transform = "scaleX(1)"; });
+}
+
+function finishLoader() {
+  if (ready) return;
+  ready = true;
+  unlockScroll();
+  readyCallbacks.splice(0).forEach((fn) => fn());
+
+  const exit = REDUCED ? 0 : LOADER.EXIT_MS;
+  loaderEl.style.transition = exit ? `transform ${exit}ms ${EASE.inOutCubic}` : "none";
+  requestAnimationFrame(() => { loaderEl.style.transform = "translateY(-105%)"; });
+  setTimeout(() => loaderEl.remove(), exit);
+}
+
+{
+  const minVisible = REDUCED ? 200 : LOADER.MIN_VISIBLE_MS;
+  let started = false;
+  const start = () => {
+    if (started) return;
+    started = true;
+    setTimeout(finishLoader, minVisible);
+  };
+  if (document.readyState === "complete") start();
+  else window.addEventListener("load", start);
+  setTimeout(start, LOADER.MAX_VISIBLE_MS);
+}
+
+/* =========================================================================
+   8. Hero
+   ========================================================================= */
+addParallax($("#hero-plate"), $(".hero"), 0, 12, "y");
+
+onReady(() => {
+  /* Title — word clip-mask, stagger 140, duration 1100, easeOutExpo. */
+  playSpans($$("#hero-title .word > span"), { stagger: 140, duration: 1100, easing: EASE.outExpo });
+  /* Tagline — stacked lines, baseDelay 350, stagger 110, duration 900. */
+  playSpans($$("#hero-tagline .line > span"), {
+    baseDelay: 350, stagger: 110, duration: 900, easing: EASE.outExpo,
+  });
+  playSpring($("#collection"), { opacity: 0, y: 28 }, { opacity: 1, y: 0 }, { tension: 200, friction: 26 }, 650);
+  playSpring($("#membership"), { opacity: 0, y: 28 }, { opacity: 1, y: 0 }, { tension: 200, friction: 26 }, 780);
+});
+
+/* Collection carousel */
+const COLLECTIONS = [
+  { img: `${ASSETS}/2.webp`, brand: "Baseline Pro", title: "Featured Gear", cta: "Shop the kit", alt: "Player driving a backhand on a hard court" },
+  { img: `${ASSETS}/3.webp`, brand: "Court Series", title: "Summer Drop", cta: "View the line", alt: "Player stretching for a forehand on clay" },
+  { img: `${ASSETS}/5.webp`, brand: "Academy Kit", title: "Junior Range", cta: "Browse juniors", alt: "Player set in a ready stance on clay" },
+];
+COLLECTIONS.forEach((c) => { const i = new Image(); i.src = c.img; });
+
+const collectionStage = $(".collection__stage");
+const collectionCard = $("#collection-card");
+const collectionDots = $("#collection-dots");
+let collectionIndex = 0;
+
+function renderDots(container, count, index, onPick, label) {
+  container.innerHTML = "";
+  for (let i = 0; i < count; i += 1) {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.setAttribute("role", "tab");
+    b.setAttribute("aria-label", `${label} ${i + 1}`);
+    if (i === index) b.setAttribute("aria-current", "true");
+    b.appendChild(document.createElement("i"));
+    b.addEventListener("click", () => onPick(i));
+    container.appendChild(b);
+  }
+}
+function syncDots(container, index) {
+  Array.from(container.children).forEach((b, i) => {
+    if (i === index) b.setAttribute("aria-current", "true");
+    else b.removeAttribute("aria-current");
+  });
+}
+
+function setCollection(next) {
+  if (next === collectionIndex) return;
+  const slide = COLLECTIONS[next];
+
+  /* Cache the outgoing card and fade it out. */
+  const ghost = collectionCard.cloneNode(true);
+  ghost.id = "";
+  ghost.classList.add("collection-card--ghost");
+  ghost.setAttribute("aria-hidden", "true");
+  collectionStage.appendChild(ghost);
+  const outSpring = makeSpring({ opacity: 1, y: 0, scale: 1 }, { tension: 210, friction: 24 }, styler(ghost));
+  outSpring.set({ opacity: 0, y: 16, scale: 0.96 });
+  setTimeout(() => ghost.remove(), 900);
+
+  /* Swap content, then fade the live card in. */
+  const img = $("#collection-img");
+  img.src = slide.img;
+  img.alt = slide.alt;
+  $("#collection-brand").textContent = slide.brand;
+  $("#collection-title").textContent = slide.title;
+  $("#collection-cta").textContent = `${slide.cta} →`;
+
+  if (!collectionCard.__spring) {
+    collectionCard.__spring = makeSpring({ opacity: 1, y: 0, scale: 1 }, { tension: 210, friction: 24 }, styler(collectionCard));
+  }
+  collectionCard.__spring.jump({ opacity: 0, y: 16, scale: 0.96 });
+  collectionCard.__spring.set({ opacity: 1, y: 0, scale: 1 });
+
+  collectionIndex = next;
+  syncDots(collectionDots, collectionIndex);
+}
+
+renderDots(collectionDots, COLLECTIONS.length, 0, (i) => setCollection(i), "Collection");
+onReady(() => {
+  setInterval(() => setCollection((collectionIndex + 1) % COLLECTIONS.length), 3800);
+});
+
+/* =========================================================================
+   9. Trust
+   ========================================================================= */
+const SLIDES = [
+  { headline: ["Expert", "Result-", "Driven", "Coaching"], img: `${ASSETS}/5.webp`, name: "Marco Vidal", role: "Head Coach", alt: "Head coach set in a ready stance on clay" },
+  { headline: ["Sharper", "Faster", "Stronger", "Player"], img: `${ASSETS}/4.webp`, name: "Elena Sokolova", role: "Performance Coach", alt: "Performance coach following through on a serve" },
+  { headline: ["Future", "Champions", "Start", "Here"], img: `${ASSETS}/1.webp`, name: "James Okoro", role: "Juniors Lead", alt: "Juniors lead waiting to return on clay" },
+];
+SLIDES.forEach((s) => { const i = new Image(); i.src = s.img; });
+
+const trustSection = $(".trust");
+const ghostWords = $$(".gw");
+const coachImg = $("#coach-img");
+const trustDots = $("#trust-dots");
+let trustIndex = 0;
+
+/* Opposing X parallax per ghost word. */
+const GHOST_PARALLAX = [
+  { from: -3, to: 3 },
+  { from: 3, to: -3 },
+  { from: -2, to: 4 },
+  { from: 4, to: -3 },
+];
+ghostWords.forEach((w, i) => {
+  const p = GHOST_PARALLAX[i];
+  addParallax(w, trustSection, p.from, p.to, "x");
+});
+
+function playGhostWords() {
+  ghostWords.forEach((w, i) => {
+    playSpans([w.firstElementChild], { baseDelay: i * 90, duration: 700, easing: EASE.outExpo });
+  });
+}
+
+const coachPhotoSpring = makeSpring({ opacity: 1 }, { tension: 260, friction: 26 }, (v) => {
+  coachImg.style.opacity = String(v.opacity);
+});
+
+function setTrust(next) {
+  const slide = SLIDES[next];
+  trustIndex = next;
+
+  ghostWords.forEach((w, i) => { w.firstElementChild.textContent = slide.headline[i]; });
+  playGhostWords();
+
+  coachImg.src = slide.img;
+  coachImg.alt = slide.alt;
+  $("#coach-name").textContent = slide.name;
+  $("#coach-role").textContent = slide.role;
+  coachPhotoSpring.jump({ opacity: 0 });
+  coachPhotoSpring.set({ opacity: 1 });
+
+  syncDots(trustDots, trustIndex);
+}
+
+renderDots(trustDots, SLIDES.length, 0, (i) => { if (i !== trustIndex) setTrust(i); }, "Coach");
+$("#trust-prev").addEventListener("click", () => setTrust((trustIndex - 1 + SLIDES.length) % SLIDES.length));
+$("#trust-next").addEventListener("click", () => setTrust((trustIndex + 1) % SLIDES.length));
+
+inviewSpring($("#pct-badge"), { opacity: 0, scale: 0.9 }, { opacity: 1, scale: 1 }, { tension: 220, friction: 22 });
+inviewSpring($("#badge-card"), { opacity: 0, y: 24 }, { opacity: 1, y: 0 }, { tension: 200, friction: 26 }, 120);
+inviewSpring($("#coach-card"), { opacity: 0, y: 60, scale: 0.92 }, { opacity: 1, y: 0, scale: 1 }, { tension: 170, friction: 26 }, 0, "rotate(6deg)");
+onInview($("#trust-title"), playGhostWords);
+
+/* =========================================================================
+   10. Programs
+   ========================================================================= */
+$$(".program-row").forEach((row, i) => {
+  const inner = $(".program-row__inner", row);
+  inviewSpring(inner, { opacity: 0, y: 26 }, { opacity: 1, y: 0 }, { tension: 190, friction: 26 }, i * 90);
+  const arrow = $(".program-row__arrow svg", row);
+  hoverSpring(row, arrow, { x: 0, opacity: 0.55 }, { x: 8, opacity: 1 }, { tension: 300, friction: 20 });
+});
+onInview($("#programs-title"), () => playLines($("#programs-title")));
+
+/* =========================================================================
+   11. Facilities
+   ========================================================================= */
+inviewSpring($("#facilities-icon"), { opacity: 0, scale: 0.85 }, { opacity: 1, scale: 1 }, { tension: 240, friction: 20 });
+onInview($("#facilities-title"), () => playLines($("#facilities-title")));
+onInview($("#facilities-body"), () => {
+  const spans = splitWords($("#facilities-body"));
+  playSpans(spans, { stagger: 28, baseDelay: 250, duration: 700, easing: EASE.outQuart, fromY: "18px" });
+});
+$$(".court").forEach((court, i) => {
+  inviewSpring(court, { opacity: 0, y: 48 }, { opacity: 1, y: 0 }, { tension: 180, friction: 26 }, i * 140);
+  hoverSpring(court, $("img", court), { scale: 1 }, { scale: 1.03 }, { tension: 300, friction: 22 });
+});
+
+/* =========================================================================
+   12. Stats
+   ========================================================================= */
+onInview($("#stats-title"), () => playLines($("#stats-title")));
+$$(".stat").forEach((cell, i) => {
+  inviewSpring(cell, { opacity: 0, y: 30 }, { opacity: 1, y: 0 }, { tension: 180, friction: 24 }, i * 110);
+});
+
+/* =========================================================================
+   13. Testimonials
+   ========================================================================= */
+onInview($("#testimonials-title"), () => playLines($("#testimonials-title")));
+$$(".testimonial").forEach((card, i) => {
+  /* Entrance lives on the card, the hover lift on its <li> so the two
+     transforms never fight over the same element. */
+  inviewSpring(card, { opacity: 0, y: 40 }, { opacity: 1, y: 0 }, { tension: 180, friction: 26 }, i * 120);
+  hoverSpring(card.parentElement, card.parentElement, { y: 0 }, { y: -8 }, { tension: 300, friction: 22 });
+});
+
+/* =========================================================================
+   14. Footer
+   ========================================================================= */
+onInview($("#footer-cta-title"), () => playLines($("#footer-cta-title")));
+inviewSpring($("#footer-pill"), { opacity: 0, y: 20 }, { opacity: 1, y: 0 }, { tension: 200, friction: 24 }, 150);
+
+/* =========================================================================
+   15. Shared hover micro-interactions
+   ========================================================================= */
+$$(".pill").forEach((pill) => {
+  const svg = $("svg", pill);
+  if (svg) hoverSpring(pill, svg, { x: 0 }, { x: 5 }, { tension: 320, friction: 20 });
+});
+$$(".arrow-btn").forEach((btn) => {
+  const svg = $("svg", btn);
+  const flipped = svg.hasAttribute("data-flip");
+  hoverSpring(btn, svg, { scale: 1 }, { scale: 1.15 }, { tension: 320, friction: 18 }, flipped ? "scaleX(-1)" : "");
+});
+$$("[data-x-icon]").forEach((svg) => {
+  hoverSpring(svg.closest("button"), svg, { rotate: 0 }, { rotate: 90 }, { tension: 300, friction: 18 });
+});
+
+/* =========================================================================
+   16. Menu overlay
+   ========================================================================= */
+const menuEl = $("#menu");
+const menuPanel = $("#menu-panel");
+const menuBackdrop = $(".menu__backdrop", menuEl);
+const menuLinks = $$("[data-menu-link]");
+const burger = $("[data-open-menu]");
+let menuOpen = false;
+
+const menuBackdropSpring = makeSpring({ opacity: 0 }, { tension: 260, friction: 30 }, (v) => {
+  menuBackdrop.style.opacity = String(v.opacity);
+});
+const menuPanelSpring = makeSpring({ opacity: 0, y: -24 }, { tension: 220, friction: 28 }, styler(menuPanel));
+const menuLinkSprings = menuLinks.map((link) =>
+  makeSpring({ opacity: 0, y: 28 }, { tension: 200, friction: 26 }, styler(link))
+);
+
+function openMenu() {
+  if (menuOpen) return;
+  menuOpen = true;
+  menuEl.classList.add("is-open");
+  menuEl.setAttribute("aria-hidden", "false");
+  burger.setAttribute("aria-expanded", "true");
+  lockScroll();
+  menuBackdropSpring.set({ opacity: 1 });
+  menuPanelSpring.set({ opacity: 1, y: 0 });
+  menuLinkSprings.forEach((sp, i) => {
+    sp.jump({ opacity: 0, y: 28 });
+    setTimeout(() => sp.set({ opacity: 1, y: 0 }), 120 + i * 70);
+  });
+}
+function closeMenu() {
+  if (!menuOpen) return;
+  menuOpen = false;
+  menuEl.classList.remove("is-open");
+  menuEl.setAttribute("aria-hidden", "true");
+  burger.setAttribute("aria-expanded", "false");
+  unlockScroll();
+  menuBackdropSpring.set({ opacity: 0 });
+  menuPanelSpring.set({ opacity: 0, y: -24 });
+  menuLinkSprings.forEach((sp) => sp.set({ opacity: 0, y: 28 }));
+}
+
+burger.addEventListener("click", openMenu);
+$$("[data-close-menu]").forEach((el) => el.addEventListener("click", closeMenu));
+menuLinks.forEach((link) => link.addEventListener("click", () => closeMenu()));
+
+/* =========================================================================
+   17. Contact modal
+   ========================================================================= */
+const modalEl = $("#modal");
+const modalPanel = $("#modal-panel");
+const modalBackdrop = $(".modal__backdrop", modalEl);
+const modalForm = $("#modal-form");
+const modalSuccess = $("#modal-success");
+const modalSubmit = $("#modal-submit");
+const modalName = $("#modal-name");
+let modalOpen = false;
+
+const modalBackdropSpring = makeSpring({ opacity: 0 }, { tension: 240, friction: 30 }, (v) => {
+  modalBackdrop.style.opacity = String(v.opacity);
+});
+const modalPanelSpring = makeSpring({ opacity: 0, y: 28, scale: 0.96 }, { tension: 240, friction: 26 }, styler(modalPanel));
+
+function openModal() {
+  if (modalOpen) return;
+  modalOpen = true;
+  modalEl.classList.add("is-open");
+  modalEl.setAttribute("aria-hidden", "false");
+  lockScroll();
+  modalBackdropSpring.set({ opacity: 1 });
+  modalPanelSpring.set({ opacity: 1, y: 0, scale: 1 });
+  playLines($("#modal-title"));
+  setTimeout(() => modalName.focus(), 120);
+}
+function closeModal() {
+  if (!modalOpen) return;
+  modalOpen = false;
+  modalEl.classList.remove("is-open");
+  modalEl.setAttribute("aria-hidden", "true");
+  unlockScroll();
+  modalBackdropSpring.set({ opacity: 0 });
+  modalPanelSpring.set({ opacity: 0, y: 28, scale: 0.96 });
+  setTimeout(() => {
+    modalForm.reset();
+    modalForm.hidden = false;
+    modalSuccess.hidden = true;
+    modalSubmit.disabled = false;
+    modalSubmit.textContent = "Request a visit";
+  }, 350);
+}
+
+$$("[data-open-modal]").forEach((el) => el.addEventListener("click", openModal));
+$$("[data-close-modal]").forEach((el) => el.addEventListener("click", closeModal));
+$("[data-menu-book]").addEventListener("click", () => { closeMenu(); openModal(); });
+
+/* Stubbed submit — never hits the network. */
+modalForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+  if (modalSubmit.disabled) return;
+  modalSubmit.disabled = true;
+  modalSubmit.textContent = "Sending…";
+  const first = (modalName.value || "").trim().split(/\s+/)[0] || "there";
+  setTimeout(() => {
+    $("#modal-success-text").textContent =
+      `Thanks, ${first} — our team will be in touch to lock in your visit.`;
+    modalForm.hidden = true;
+    modalSuccess.hidden = false;
+  }, 700);
+});
+
+document.addEventListener("keydown", (e) => {
+  if (e.key !== "Escape") return;
+  if (modalOpen) closeModal();
+  else if (menuOpen) closeMenu();
+});
+</script>
+</body>
+</html>
